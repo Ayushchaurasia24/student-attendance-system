@@ -43,7 +43,7 @@ async function loadStudents() {
   }
 }
 
-// 🔹 Render radio buttons properly
+// Render radio buttons properly
 function renderStudents() {
 
   container.innerHTML = "";
@@ -65,7 +65,7 @@ function renderStudents() {
   });
 }
 
-// 🔹 Mark attendance
+// Mark attendance
 function markAttendance() {
 
   const date = document.getElementById("date").value;
@@ -94,7 +94,7 @@ function markAttendance() {
     });
   });
 
-  // 🔥 Send to backend
+  // Send to backend
   axios.post('http://localhost:3000/attendance/mark', {
     date,
     records
@@ -105,7 +105,7 @@ function markAttendance() {
   .catch(err => console.log(err));
 }
 
-// 🔹 Load on page start
+// Load on page start
 loadStudents();
 
 </script>
