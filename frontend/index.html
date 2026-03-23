@@ -2,16 +2,50 @@
 <html>
 <head>
   <title>Attendance</title>
-    <style>
-        body {
-        font-family: Arial;
-        padding: 20px;
-        }
-        button {
-        margin-top: 10px;
-        padding: 8px 15px;
-        }
-    </style>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h2, h3 {
+      color: #333;
+    }
+    button {
+      padding: 8px 15px;
+      margin-top: 10px;
+      margin-right: 10px;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #students div {
+      background: white;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 60%;
+      margin-top: 15px;
+      background: white;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ccc;
+    }
+    th {
+      background: #333;
+      color: white;
+    }
+  </style>
 </head>
 <body>
 
@@ -24,39 +58,35 @@
 <button onclick="markAttendance()">Submit</button>
 <button onclick="getReport()">Report</button>
 
+<h3>Attendance Report</h3>
+<div id="report"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
 
 let students = [];
-
 const container = document.getElementById("students");
 
-// 🔹 Load students from backend
 async function loadStudents() {
-  try {
-    const res = await axios.get('http://localhost:3000/students');
-    students = res.data;
-    renderStudents();
-  } catch (err) {
-    console.log(err);
-  }
+  const res = await axios.get('http://localhost:3000/students');
+  students = res.data;
+  renderStudents();
 }
 
+<<<<<<< HEAD
 // Render radio buttons properly
+=======
+>>>>>>> ed9c8b9 (Updated frontend UI and fixed report feature)
 function renderStudents() {
-
   container.innerHTML = "";
-
   students.forEach(s => {
     container.innerHTML += `
-      <div style="margin:10px 0;">
+      <div>
         <strong>${s.name}</strong>
-        
         <label>
           <input type="radio" name="student-${s.id}" value="present"> Present
         </label>
-        
         <label>
           <input type="radio" name="student-${s.id}" value="absent"> Absent
         </label>
@@ -65,47 +95,88 @@ function renderStudents() {
   });
 }
 
+<<<<<<< HEAD
 // Mark attendance
+=======
+>>>>>>> ed9c8b9 (Updated frontend UI and fixed report feature)
 function markAttendance() {
-
   const date = document.getElementById("date").value;
 
   if (!date) {
-    alert("Please select a date ❗");
+    alert("Select date");
     return;
   }
 
   let records = [];
 
-  students.forEach(s => {
-
-    const selected = document.querySelector(
-      `input[name="student-${s.id}"]:checked`
-    );
-
+  for (let s of students) {
+    const selected = document.querySelector(`input[name="student-${s.id}"]:checked`);
     if (!selected) {
-      alert(`Please mark attendance for ${s.name}`);
+      alert(`Mark attendance for ${s.name}`);
       return;
     }
-
     records.push({
       studentId: s.id,
       status: selected.value
     });
-  });
+  }
 
+<<<<<<< HEAD
   // Send to backend
+=======
+>>>>>>> ed9c8b9 (Updated frontend UI and fixed report feature)
   axios.post('http://localhost:3000/attendance/mark', {
     date,
     records
   })
-  .then(() => {
-    alert("✅ Attendance Saved Successfully");
-  })
-  .catch(err => console.log(err));
+  .then(() => alert("Saved"));
 }
 
+async function getReport() {
+  const reportRes = await axios.get('http://localhost:3000/attendance/report');
+  const studentRes = await axios.get('http://localhost:3000/students');
+
+  const reportData = reportRes.data;
+  const studentsData = studentRes.data;
+
+  const reportDiv = document.getElementById("report");
+  reportDiv.innerHTML = "";
+
+  if (reportData.length === 0) {
+    reportDiv.innerHTML = "<p>No data</p>";
+    return;
+  }
+
+  let table = `
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Total</th>
+        <th>Present</th>
+        <th>Percentage</th>
+      </tr>
+  `;
+
+  reportData.forEach(r => {
+    const student = studentsData.find(s => s.id === r.studentId);
+    table += `
+      <tr>
+        <td>${student ? student.name : "Unknown"}</td>
+        <td>${r.total}</td>
+        <td>${r.present}</td>
+        <td>${r.percentage}%</td>
+      </tr>
+    `;
+  });
+
+  table += `</table>`;
+  reportDiv.innerHTML = table;
+}
+
+<<<<<<< HEAD
 // Load on page start
+=======
+>>>>>>> ed9c8b9 (Updated frontend UI and fixed report feature)
 loadStudents();
 
 </script>
